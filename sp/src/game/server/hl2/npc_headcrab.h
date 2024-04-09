@@ -14,6 +14,10 @@
 #include "ai_basenpc.h"
 #include "soundent.h"
 
+#include "npc_antlionflinger.h"
+
+// Forward declaration
+class CNPC_AntlionFlinger;
 
 
 abstract_class CBaseHeadcrab : public CAI_BaseNPC
@@ -77,6 +81,26 @@ public:
 	virtual	bool		AllowedToIgnite( void ) { return true; }
 
 	virtual bool CanBeAnEnemyOf( CBaseEntity *pEnemy );
+
+	void FlungFromAntlion(EHANDLE pAntlion)
+	{
+		m_bThrownByAntlion = true;
+		m_hAntlionFlinger = pAntlion;
+
+		SetGroundEntity(NULL);
+		PhysicsSimulate();
+
+		SetState(NPC_STATE_ALERT);
+		SetEnemy(m_hAntlionFlinger->GetEnemy());
+
+		JumpAttack(false, GetEnemy()->GetAbsOrigin(), true);
+	}
+
+	void Event_AntlionKilled()
+	{
+		m_hAntlionFlinger = NULL;
+		m_bThrownByAntlion = false;
+	}
 
 	bool	IsHangingFromCeiling( void ) 
 	{ 
@@ -149,6 +173,11 @@ protected:
 
 	bool	m_bHangingFromCeiling;
 	float	m_flIlluminatedTime;
+
+	// JS - For AntlionFlinger
+	// NOTE - This should probably be an EHANDLE...
+	EHANDLE m_hAntlionFlinger;
+	bool	m_bThrownByAntlion;
 };
 
 

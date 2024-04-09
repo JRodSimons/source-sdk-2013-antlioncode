@@ -175,6 +175,8 @@ public:
 
 	virtual void	NotifyDeadFriend( CBaseEntity *pFriend );
 
+	virtual bool GetSpitVector(const Vector& vecStartPos, const Vector& vecTarget, Vector* vecOut);
+
 private:
 
 	inline CBaseEntity *EntityToWatch( void );
@@ -223,7 +225,6 @@ private:
 	virtual bool CanRunAScriptedNPCInteraction( bool bForced = false );
 
 	virtual void Ignite ( float flFlameLifetime, bool bNPCOnly, float flSize, bool bCalledByLevelDesigner );
-	virtual bool GetSpitVector( const Vector &vecStartPos, const Vector &vecTarget, Vector *vecOut );
 	virtual bool InnateWeaponLOSCondition( const Vector &ownerPos, const Vector &targetPos, bool bSetConditions );
 	virtual bool FCanCheckAttacks( void );
 	
@@ -294,11 +295,15 @@ protected:
 	int m_poseHead_Yaw, m_poseHead_Pitch;
 	virtual void	PopulatePoseParameters( void );
 
+	// JS: MAKING THIS PUBLIC SO ANTLIONFLINGER CAN HAVE CUSTOM AI!
+	DEFINE_CUSTOM_AI;
+
 private:
 
 	HSOUNDSCRIPTHANDLE	m_hFootstep;
 
-	DEFINE_CUSTOM_AI;
+// JS - Making this protected for child class access
+protected:
 
 	//==================================================
 	// AntlionConditions
@@ -313,7 +318,10 @@ private:
 		COND_ANTLION_RECEIVED_ORDERS,
 		COND_ANTLION_IN_WATER,
 		COND_ANTLION_CAN_JUMP_AT_TARGET,
-		COND_ANTLION_SQUADMATE_KILLED
+		COND_ANTLION_SQUADMATE_KILLED,
+
+		// JS - Adding this in to allow for AntlionFlinger to connect here
+		COND_ANTLION_LAST_CONDITION,
 	};
 
 	//==================================================
@@ -348,7 +356,10 @@ private:
 		SCHED_ANTLION_TAKE_COVER_FROM_ENEMY,
 		SCHED_ANTLION_ZAP_FLIP,
 		SCHED_ANTLION_WORKER_FLANK_RANDOM,
-		SCHED_ANTLION_TAKE_COVER_FROM_SAVEPOSITION
+		SCHED_ANTLION_TAKE_COVER_FROM_SAVEPOSITION,
+
+		// JS - Adding this in to allow for AntlionFlinger to connect here
+		SCHED_ANTLION_LAST_SHARED,
 	};
 
 	//==================================================
@@ -377,6 +388,9 @@ private:
 		TASK_ANTLION_DROWN,
 		TASK_ANTLION_GET_PATH_TO_RANDOM_NODE,
 		TASK_ANTLION_FIND_COVER_FROM_SAVEPOSITION,
+
+		// JS - Adding this in to allow for AntlionFlinger to connect here
+		TASK_ANTLION_LAST_SHARED
 	};
 };
 

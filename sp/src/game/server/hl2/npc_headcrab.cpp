@@ -1780,6 +1780,14 @@ void CBaseHeadcrab::ClampRagdollForce( const Vector &vecForceIn, Vector *vecForc
 //-----------------------------------------------------------------------------
 void CBaseHeadcrab::Event_Killed( const CTakeDamageInfo &info )
 {
+	// If we we're thrown by an antlion flinger, message back to notify them of the death
+	if (m_bThrownByAntlion)
+	{
+		CNPC_AntlionFlinger* pAntlion = dynamic_cast<CNPC_AntlionFlinger*>(m_hAntlionFlinger.Get());
+		if (pAntlion)
+			pAntlion->Event_OnHeadcrabKilled();
+	}
+
 	// Create a little decal underneath the headcrab
 	// This type of damage combination happens from dynamic scripted sequences
 	if ( info.GetDamageType() & (DMG_GENERIC | DMG_PREVENT_PHYSICS_FORCE) )
