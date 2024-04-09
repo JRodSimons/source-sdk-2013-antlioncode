@@ -104,8 +104,10 @@ void CNPC_AntlionFlinger::Spawn()
 	m_NPCState		= NPC_STATE_NONE;
 
 	CapabilitiesClear();
-	CapabilitiesAdd(bits_CAP_MOVE_GROUND | bits_CAP_INNATE_MELEE_ATTACK1 | bits_CAP_INNATE_MELEE_ATTACK2);
+	CapabilitiesAdd(bits_CAP_MOVE_GROUND);
 	//CapabilitiesAdd(bits_CAP_MOVE_JUMP);
+	CapabilitiesAdd(bits_CAP_INNATE_RANGE_ATTACK1 | bits_CAP_INNATE_RANGE_ATTACK2 | bits_CAP_INNATE_MELEE_ATTACK1 | bits_CAP_INNATE_MELEE_ATTACK2);
+	CapabilitiesAdd(bits_CAP_SQUAD);
 	SetCollisionGroup(HL2COLLISION_GROUP_ANTLION);
 
 	AddSpawnFlags(SF_NPC_LONG_RANGE | SF_ANTLION_WORKER);
@@ -226,7 +228,8 @@ void CNPC_AntlionFlinger::Event_Killed(const CTakeDamageInfo& info)
 	CBaseHeadcrab* pHeadcrab;
 	for (int i = 0; i < m_iNumActiveHeadcrabs; i++)
 	{
-		pHeadcrab = dynamic_cast<CBaseHeadcrab*>(m_headcrabs[i].Get());
+		//pHeadcrab = dynamic_cast<CBaseHeadcrab*>(m_headcrabs[i].Get());
+		pHeadcrab = m_headcrabs[i].Get();
 		if (pHeadcrab)
 			pHeadcrab->Event_AntlionKilled();
 	}
@@ -279,8 +282,8 @@ void CNPC_AntlionFlinger::HeadcrabFling()
 			pHeadcrab->SetOwnerEntity(this);
 
 			EHANDLE hAntlion = this;
-			pHeadcrab->FlungFromAntlion(hAntlion);
 			DispatchSpawn(pHeadcrab);
+			pHeadcrab->FlungFromAntlion(hAntlion);
 
 			//throwVector[0] = throwVector[0] * 2;
 			pHeadcrab->SetAbsVelocity(throwVector);
@@ -376,6 +379,8 @@ void CNPC_AntlionFlinger::GetThrowVector(const Vector& vecStartPos, const Vector
 AI_BEGIN_CUSTOM_NPC(npc_antlionflinger, CNPC_AntlionFlinger)
 
 	DECLARE_ANIMEVENT(AE_ANTLION_WORKER_SPIT);
+
+	DECLARE_CONDITION(COND_ANTLIONFLINGER_HAS_ACTIVE_CRABS);
 
 	DECLARE_TASK(TASK_ANTLIONFLINGER_SHOOT_CRABS);
 

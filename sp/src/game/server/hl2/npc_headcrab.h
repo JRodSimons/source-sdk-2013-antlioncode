@@ -82,25 +82,9 @@ public:
 
 	virtual bool CanBeAnEnemyOf( CBaseEntity *pEnemy );
 
-	void FlungFromAntlion(EHANDLE pAntlion)
-	{
-		m_bThrownByAntlion = true;
-		m_hAntlionFlinger = pAntlion;
+	void FlungFromAntlion(CHandle<CNPC_AntlionFlinger> pAntlion);
 
-		SetGroundEntity(NULL);
-		PhysicsSimulate();
-
-		SetState(NPC_STATE_ALERT);
-		SetEnemy(m_hAntlionFlinger->GetEnemy());
-
-		JumpAttack(false, GetEnemy()->GetAbsOrigin(), true);
-	}
-
-	void Event_AntlionKilled()
-	{
-		m_hAntlionFlinger = NULL;
-		m_bThrownByAntlion = false;
-	}
+	void Event_AntlionKilled();
 
 	bool	IsHangingFromCeiling( void ) 
 	{ 
@@ -175,8 +159,7 @@ protected:
 	float	m_flIlluminatedTime;
 
 	// JS - For AntlionFlinger
-	// NOTE - This should probably be an EHANDLE...
-	EHANDLE m_hAntlionFlinger;
+	CHandle<CNPC_AntlionFlinger> m_hAntlionFlinger;
 	bool	m_bThrownByAntlion;
 };
 

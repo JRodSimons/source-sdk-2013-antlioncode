@@ -541,7 +541,7 @@
 
 ]
 
-@NPCClass base(BaseNPC) studio("models/antlion_worker.mdl") sphere() = npc_antlionflinger :
+@NPCClass base(npc_antlion) studio("models/antlion_worker.mdl") sphere() = npc_antlionflinger :
 	"Antlions will run away from ai_sound, type: Thumper."
 [
 	headcrabType(choices) : "Headcrab Type" : 0 : "The type of headcrab this antlion will fling" =

@@ -278,6 +278,8 @@ void CBaseHeadcrab::Spawn( void )
 
 	m_bHangingFromCeiling = false;
 	m_flIlluminatedTime = -1;
+
+	m_bThrownByAntlion = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -1356,6 +1358,39 @@ bool CBaseHeadcrab::CanBeAnEnemyOf( CBaseEntity *pEnemy )
 	return BaseClass::CanBeAnEnemyOf( pEnemy );
 }
 
+
+//-----------------------------------------------------------------------------
+// Purpose: This headcrab was just thrown by an antlionflinger, save off a
+//			reference to the antlion and attack their enemy.
+//-----------------------------------------------------------------------------
+void CBaseHeadcrab::FlungFromAntlion(CHandle<CNPC_AntlionFlinger> pAntlion)
+{
+	m_bThrownByAntlion = true;
+	m_hAntlionFlinger = pAntlion;
+
+	SetGroundEntity(NULL);
+	PhysicsSimulate();
+
+	SetState(NPC_STATE_ALERT);
+
+	// Just an extra sanity check, just incase the handle goes away...
+	if (m_hAntlionFlinger.IsValid())
+		SetEnemy(m_hAntlionFlinger.Get()->GetEnemy());
+
+	JumpAttack(false, GetEnemy()->GetAbsOrigin(), true);
+}
+
+
+//-----------------------------------------------------------------------------
+// Purpose: Our antlion was just killed, remove the reference.
+//-----------------------------------------------------------------------------
+void CBaseHeadcrab::Event_AntlionKilled()
+{
+	m_hAntlionFlinger = NULL;
+	m_bThrownByAntlion = false;
+}
+
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : pTask - 
@@ -1783,7 +1818,7 @@ void CBaseHeadcrab::Event_Killed( const CTakeDamageInfo &info )
 	// If we we're thrown by an antlion flinger, message back to notify them of the death
 	if (m_bThrownByAntlion)
 	{
-		CNPC_AntlionFlinger* pAntlion = dynamic_cast<CNPC_AntlionFlinger*>(m_hAntlionFlinger.Get());
+		CNPC_AntlionFlinger* pAntlion = m_hAntlionFlinger.Get();
 		if (pAntlion)
 			pAntlion->Event_OnHeadcrabKilled();
 	}

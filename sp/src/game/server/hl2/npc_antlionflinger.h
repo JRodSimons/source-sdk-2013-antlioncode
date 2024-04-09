@@ -13,6 +13,9 @@
 #include "npc_antlion.h"
 #include "npc_headcrab.h"
 
+// Forward declaration
+class CBaseHeadcrab;
+
 class CNPC_AntlionFlinger : public CNPC_Antlion
 {
 	DECLARE_CLASS(CNPC_AntlionFlinger, CNPC_Antlion);
@@ -35,10 +38,7 @@ public:
 	void	Event_Killed(const CTakeDamageInfo& info) override;
 
 	void	HeadcrabFling();
-	void	Event_OnHeadcrabKilled()
-	{
-		m_iNumActiveHeadcrabs--;
-	}
+	void	Event_OnHeadcrabKilled() { m_iNumActiveHeadcrabs--; }
 
 	DECLARE_DATADESC();
 	DEFINE_CUSTOM_AI;
@@ -51,7 +51,7 @@ private:
 	int		m_iHeadcrabType;
 	int		m_iHeadcrabCapacity;
 
-	CUtlVector<EHANDLE> m_headcrabs;
+	CUtlVector<CHandle<CBaseHeadcrab>> m_headcrabs;
 
 
 private:
