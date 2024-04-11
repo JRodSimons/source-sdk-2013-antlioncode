@@ -82,7 +82,7 @@ public:
 
 	virtual bool CanBeAnEnemyOf( CBaseEntity *pEnemy );
 
-	void FlungFromAntlion(CHandle<CNPC_AntlionFlinger> pAntlion);
+	void FlungFromAntlion(CNPC_AntlionFlinger* pAntlion);
 
 	void Event_AntlionKilled();
 

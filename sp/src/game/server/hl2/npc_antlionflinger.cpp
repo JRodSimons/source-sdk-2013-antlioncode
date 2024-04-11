@@ -6,12 +6,14 @@
 
 #include "cbase.h"
 #include "npc_antlionflinger.h"
+#include "npc_headcrab.h"
 #include "npcevent.h"
 #include "movevars_shared.h"
 #include "ndebugoverlay.h"
 #include "particle_parse.h"
 #include "hl2_shareddefs.h"
 #include "saverestore_utlvector.h"
+#include "convar.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -21,9 +23,12 @@ LINK_ENTITY_TO_CLASS(npc_antlionflinger, CNPC_AntlionFlinger);
 #define ANTLIONFLINGER_MODEL "models/antlion_worker.mdl"
 #define ANTLION_FLINGER_MAX_HEADCRABS 10
 
-// TODO: Make this a ConVar
-#define ANTLION_HEADCRAB_FLING_SPEED 800
 #define ANTLION_HEADCRAB_FLING_TOLERANCE (10 * 12)
+
+// Uncomment this when skill.cfg entry is ready
+//ConVar sk_antlionflinger_health("sk_antlionflinger_health", "0");
+
+ConVar sk_antlion_headcrab_fling_speed("sk_antlion_headcrab_fling_speed", "800", FCVAR_ARCHIVE, "sk_antlion_headcrab_fling_speed");
 
 enum eHeadcrabType
 {
@@ -99,6 +104,7 @@ void CNPC_AntlionFlinger::Spawn()
 	SetMoveType(MOVETYPE_STEP);
 	SetBloodColor(BLOOD_COLOR_GREEN);
 
+	//m_iHealth		= sk_antlionflinger_health.GetInt();
 	m_iHealth		= 50;
 	m_flFieldOfView = -0.5;
 	m_NPCState		= NPC_STATE_NONE;
@@ -275,15 +281,14 @@ void CNPC_AntlionFlinger::HeadcrabFling()
 			
 
 			Vector throwVector;
-			GetThrowVector(vecSpitPos, vecTarget, ANTLION_HEADCRAB_FLING_SPEED, &throwVector);
+			GetThrowVector(vecSpitPos, vecTarget, sk_antlion_headcrab_fling_speed.GetInt(), &throwVector);
 
 			pHeadcrab->SetAbsOrigin(vecSpitPos + Vector(0, 0, -8));
 			pHeadcrab->SetAbsAngles(GetAbsAngles());
 			pHeadcrab->SetOwnerEntity(this);
 
-			EHANDLE hAntlion = this;
 			DispatchSpawn(pHeadcrab);
-			pHeadcrab->FlungFromAntlion(hAntlion);
+			pHeadcrab->FlungFromAntlion(this);
 
 			//throwVector[0] = throwVector[0] * 2;
 			pHeadcrab->SetAbsVelocity(throwVector);

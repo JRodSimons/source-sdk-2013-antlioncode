@@ -11,7 +11,6 @@
 #endif
 
 #include "npc_antlion.h"
-#include "npc_headcrab.h"
 
 // Forward declaration
 class CBaseHeadcrab;

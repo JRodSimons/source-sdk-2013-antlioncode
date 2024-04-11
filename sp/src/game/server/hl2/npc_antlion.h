@@ -295,7 +295,7 @@ protected:
 	int m_poseHead_Yaw, m_poseHead_Pitch;
 	virtual void	PopulatePoseParameters( void );
 
-	// JS: MAKING THIS PUBLIC SO ANTLIONFLINGER CAN HAVE CUSTOM AI!
+	// JS: Making this public so AntlionFlinger can have custom ai
 	DEFINE_CUSTOM_AI;
 
 private:

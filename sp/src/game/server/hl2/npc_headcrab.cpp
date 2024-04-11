@@ -1363,7 +1363,7 @@ bool CBaseHeadcrab::CanBeAnEnemyOf( CBaseEntity *pEnemy )
 // Purpose: This headcrab was just thrown by an antlionflinger, save off a
 //			reference to the antlion and attack their enemy.
 //-----------------------------------------------------------------------------
-void CBaseHeadcrab::FlungFromAntlion(CHandle<CNPC_AntlionFlinger> pAntlion)
+void CBaseHeadcrab::FlungFromAntlion(CNPC_AntlionFlinger* pAntlion)
 {
 	m_bThrownByAntlion = true;
 	m_hAntlionFlinger = pAntlion;
@@ -1373,7 +1373,7 @@ void CBaseHeadcrab::FlungFromAntlion(CHandle<CNPC_AntlionFlinger> pAntlion)
 
 	SetState(NPC_STATE_ALERT);
 
-	// Just an extra sanity check, just incase the handle goes away...
+	// Just an extra sanity check, incase the handle goes away...
 	if (m_hAntlionFlinger.IsValid())
 		SetEnemy(m_hAntlionFlinger.Get()->GetEnemy());
 
