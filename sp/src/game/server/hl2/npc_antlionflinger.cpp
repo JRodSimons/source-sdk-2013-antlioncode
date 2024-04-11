@@ -29,6 +29,7 @@ LINK_ENTITY_TO_CLASS(npc_antlionflinger, CNPC_AntlionFlinger);
 //ConVar sk_antlionflinger_health("sk_antlionflinger_health", "0");
 
 ConVar sk_antlion_headcrab_fling_speed("sk_antlion_headcrab_fling_speed", "800", FCVAR_ARCHIVE, "sk_antlion_headcrab_fling_speed");
+ConVar g_debug_antlionflinger("g_debug_antlionflinger", "0", FCVAR_CHEAT);
 
 enum eHeadcrabType
 {
@@ -348,7 +349,17 @@ void CNPC_AntlionFlinger::GetThrowVector(const Vector& vecStartPos, const Vector
 	if (tr.fraction != 1.0)
 	{
 		// fail!
+		if (g_debug_antlionflinger.GetBool())
+		{
+			NDebugOverlay::Line(vecStartPos, vecApex, 255, 0, 0, true, 5.0);
+		}
+
 		*vecOut = vec3_origin;
+	}
+
+	if (g_debug_antlionflinger.GetBool())
+	{
+		NDebugOverlay::Line(vecStartPos, vecApex, 0, 255, 0, true, 5.0);
 	}
 
 	UTIL_TraceLine(vecApex, vecTarget, MASK_SOLID_BRUSHONLY, this, COLLISION_GROUP_NONE, &tr);
@@ -357,19 +368,32 @@ void CNPC_AntlionFlinger::GetThrowVector(const Vector& vecStartPos, const Vector
 		bool bFail = true;
 
 		// Didn't make it all the way there, but check if we're within our tolerance range
-		
 		{
 			float flNearness = (tr.endpos - vecTarget).LengthSqr();
 			if (flNearness < Square(ANTLION_HEADCRAB_FLING_TOLERANCE))
 			{
+				if (g_debug_antlionflinger.GetBool())
+				{
+					NDebugOverlay::Sphere(tr.endpos, vec3_angle, ANTLION_HEADCRAB_FLING_TOLERANCE, 0, 255, 0, 0, true, 5.0);
+				}
 				bFail = false;
 			}
 		}
 
 		if (bFail)
 		{
+			if (g_debug_antlionflinger.GetBool())
+			{
+				NDebugOverlay::Line(vecApex, vecTarget, 255, 0, 0, true, 5.0);
+				NDebugOverlay::Sphere(tr.endpos, vec3_angle, ANTLION_HEADCRAB_FLING_TOLERANCE, 255, 0, 0, 0, true, 5.0);
+			}
 			*vecOut = vec3_origin;
 		}
+	}
+
+	if (g_debug_antlionflinger.GetBool())
+	{
+		NDebugOverlay::Line(vecApex, vecTarget, 0, 255, 0, true, 5.0);
 	}
 
 	*vecOut = vecGrenadeVel;
