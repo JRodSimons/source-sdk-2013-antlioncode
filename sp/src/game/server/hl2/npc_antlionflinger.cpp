@@ -13,7 +13,6 @@
 #include "particle_parse.h"
 #include "hl2_shareddefs.h"
 #include "saverestore_utlvector.h"
-#include "convar.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
