@@ -54,3 +54,11 @@ config.cfg
 # shader files
 *.tmp
 
+/sp/game
+/sp/src/.vs
+/sp/src/fgdlib
+*.filters
+*.vpc_crc
+*.sentinel
+*.pdb
+*.lib
